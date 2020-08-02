@@ -1,0 +1,15 @@
+{
+  "name": "nodestudy",
+  "version": "1.0.0",
+  "description": "nodejs study package",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Roman Radchenko <nodenwwsfww@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
