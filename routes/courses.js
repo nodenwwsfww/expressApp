@@ -3,26 +3,32 @@ const {
 } = require('express');
 const router = Router();
 const Course = require('../models/course');
+const course = require('../models/course');
 
 router.get('/', async (request, response) => {
-    const courses = await Course.getAll();
-    response.render('courses', {
-        title: 'Курсы',
-        isCourses: true,
-        courses
-    });
+    try {
+        const courses = await Course.find({});
+        response.render('courses', {
+            title: 'Курсы',
+            isCourses: true,
+            courses
+        });
+        console.dir(courses);
+    } catch(err) {
+        console.error(err);
+    }
 });
 
 router.get('/:id/', async (request, response) => {
-    const course = await Course.getById(request.params.id);
-    if (course !== -1) {
+    try {
+        const course = await Course.findById(request.params.id);
         response.render('course', {
             layout: 'empty',
             title: `Курс ${course.title}`,
             course
         });
-    } else {
-        console.error('Ошибка & Курс не найден');
+    } catch(err) {
+        console.error(err);
     }
 });
 
@@ -31,17 +37,24 @@ router.get('/:id/edit', async (request, response) => {
         return response.redirect('/');
     }
     
-    const course = await Course.getById(request.params.id);
+    try {
+        const course = await Course.findById(request.params.id);
 
-    response.render('course-edit', {
-        title: `Редактировать ${course.title}`,
-        course
-    });
+        response.render('course-edit', {
+            title: `Редактировать ${course.title}`,
+            course
+        });
+    } catch(err) {
+        console.error(err);
+    }
 });
 
 router.post('/edit', async (request, response) => {
-    console.log(request.body);
-    await Course.update(request.body);
-    response.redirect('/courses');
+    try {
+        await Course.findOneAndUpdate({id: request.body.id}, request.body);
+        response.redirect('/courses');
+    } catch(err) {
+        console.error(err);
+    }
 });
 module.exports = router;

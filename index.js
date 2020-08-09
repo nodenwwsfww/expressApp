@@ -1,4 +1,5 @@
 const path = require('path');
+const mongoose = require('mongoose');
 const express = require('express');
 const exphbs = require('express-handlebars');
 
@@ -28,6 +29,17 @@ app.use('/card', cardRoutes);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+const start = async () => {
+    try {
+        const password = '4wLwiA26Gs9Eoqnl'; // edit
+        const url = `mongodb+srv://nwwsfww:${password}@cluster0.xe1qk.mongodb.net/shop`;
+    
+        await mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch(err) {
+        console.error(err);
+    }
+};
+start();
