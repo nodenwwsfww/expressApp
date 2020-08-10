@@ -7,7 +7,6 @@ $(() => {
     };
 
     $('.price').each((index, node) => $(node).text(formatValue($(node).text())));
-
     // Корзина (удаление)
     const $card = $('#card');
     if ($card) {

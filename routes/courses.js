@@ -4,16 +4,16 @@ const {
 const router = Router();
 const Course = require('../models/course');
 const course = require('../models/course');
+const { findByIdAndRemove } = require('../models/course');
 
 router.get('/', async (request, response) => {
     try {
-        const courses = await Course.find({});
+        const courses = await Course.find();
         response.render('courses', {
             title: 'Курсы',
             isCourses: true,
             courses
         });
-        console.dir(courses);
     } catch(err) {
         console.error(err);
     }
@@ -36,7 +36,6 @@ router.get('/:id/edit', async (request, response) => {
     if (!request.query.allow) {
         return response.redirect('/');
     }
-    
     try {
         const course = await Course.findById(request.params.id);
 
@@ -50,11 +49,23 @@ router.get('/:id/edit', async (request, response) => {
 });
 
 router.post('/edit', async (request, response) => {
+    const {id} = request.body;
+    delete request.body.id;
     try {
-        await Course.findOneAndUpdate({id: request.body.id}, request.body);
+        await Course.findByIdAndUpdate(id, request.body);
         response.redirect('/courses');
     } catch(err) {
         console.error(err);
     }
 });
+
+router.post('/remove', async (request, response) => {
+    try {
+        await Course.findByIdAndRemove(request.body.id);
+        response.redirect('/courses');
+    } catch(err) {
+        console.error(err);
+    }
+});
+
 module.exports = router;
