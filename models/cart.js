@@ -3,49 +3,49 @@ const path = require('path');
 
 const generatedPath = path.join(
     path.dirname(process.mainModule.filename),
-    'data/card.json'
+    'data/cart.json'
 );
-class Card {
+class Cart {
 
     static async add(course) {
-        const card = await Card.fetch();
-        const idx = card.courses.findIndex( c => c.id === course.id);
-        const matchedCourse = card.courses[idx];
+        const cart = await Cart.fetch();
+        const idx = cart.courses.findIndex( c => c.id === course.id);
+        const matchedCourse = cart.courses[idx];
 
         if (matchedCourse) {
             // Если есть совпадение
             matchedCourse.count++;
-            card.courses[idx] = matchedCourse;
+            cart.courses[idx] = matchedCourse;
         } else {
             course.count = 1;
-            card.courses.push(course);
+            cart.courses.push(course);
         }
-        card.price += +course.price;
+        cart.price += +course.price;
 
-        await Card.saveAll(card);
+        await Cart.saveAll(cart);
     }
     static async remove(id) {
-        const card = await Card.fetch();
-        const idx = card.courses.findIndex(course => course.id === id);
-        const course = card.courses[idx];
+        const cart = await Cart.fetch();
+        const idx = cart.courses.findIndex(course => course.id === id);
+        const course = cart.courses[idx];
 
         if (course) {
             course.count--;
-            card.price -= course.price;
+            cart.price -= course.price;
             if (course.count <= 0) {
                 /* Удаляем, если закончились (count) */
-                card.courses.splice(idx, 1);
+                cart.courses.splice(idx, 1);
             }
             /* Обновляем базу данных */
-            await Card.saveAll(card);
+            await Cart.saveAll(cart);
         } else {
-            console.error('Ошибка & Курс не найден в \'card.json\'');
+            console.error('Ошибка & Курс не найден в \'cart.json\'');
         }
-        return card;
+        return cart;
     }
-    static saveAll(card) {
+    static saveAll(cart) {
         return new Promise( (resolve, reject) => {
-            fs.writeFile(generatedPath, JSON.stringify(card), err => {
+            fs.writeFile(generatedPath, JSON.stringify(cart), err => {
                 if (err) reject(err);
                 else resolve();
             })
@@ -59,4 +59,4 @@ class Card {
     }
 }
 
-module.exports = Card;
+module.exports = Cart;

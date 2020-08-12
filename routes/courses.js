@@ -4,11 +4,13 @@ const {
 const router = Router();
 const Course = require('../models/course');
 const course = require('../models/course');
-const { findByIdAndRemove } = require('../models/course');
+const { findByIdAndRemove, populate } = require('../models/course');
 
 router.get('/', async (request, response) => {
     try {
-        const courses = await Course.find();
+        const courses = await Course.find()
+        .populate('userId', 'email name');
+
         response.render('courses', {
             title: 'Курсы',
             isCourses: true,

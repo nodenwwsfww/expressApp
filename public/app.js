@@ -8,31 +8,31 @@ $(() => {
 
     $('.price').each((index, node) => $(node).text(formatValue($(node).text())));
     // Корзина (удаление)
-    const $card = $('#card');
-    if ($card) {
-        $card.on('click', ({
+    const $cart = $('#cart');
+    if ($cart) {
+        $cart.on('click', ({
             target
         }) => {
             if (!$(target).hasClass('remove-course')) return;
 
-            fetch(`/card/remove/${event.target.dataset.id}`, {
+            fetch(`/cart/remove/${event.target.dataset.id}`, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
-                .then(cardData => {
-                    if (cardData.courses.length) {
-                        const idx = cardData.courses.findIndex(course => course.id === target.dataset.id);
-                        const course = cardData.courses[idx];
+                .then(cartData => {
+                    if (cartData.courses.length) {
+                        const idx = cartData.courses.findIndex(course => course.id === target.dataset.id);
+                        const course = cartData.courses[idx];
 
                         /* Уменьшаем количество или удаляем полностью из корзины */
                         if (course && course.count) $(target).parents('.course-item').find('.course-count').text(course.count);
                         else $(target).parents('.course-item').remove();
 
                         // Форматируем окончательную стоимость содержимого корзины
-                        $('.price').text(formatValue(cardData.price));
+                        $('.price').text(formatValue(cartData.price));
                     } else {
                         // Если закончились курсы
-                        $card.html('<p>Корзина пуста</p>');
+                        $cart.html('<p>Корзина пуста</p>');
                     }
                 });
         });
