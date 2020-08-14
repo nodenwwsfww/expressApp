@@ -12,6 +12,7 @@
     flex-direction: column;
     align-items: center;
 }
+
 .course h1 {
     margin-bottom: 2rem;
 }
@@ -33,4 +34,8 @@
 
 .course-form {
     margin-bottom: 2rem;
+}
+
+.auth {
+    padding-top: 2rem;
 }

@@ -52,4 +52,7 @@ $(() => {
                 });
         });
     }
+
+    /* Табы auth */
+    M.Tabs.init(document.querySelectorAll('.tabs'), {});
 });

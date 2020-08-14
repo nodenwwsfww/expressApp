@@ -15,6 +15,7 @@ const addRoutes = require('./routes/add');
 const coursesRoutes = require('./routes/courses');
 const cartRoutes = require('./routes/cart');
 const ordersRoutes = require('./routes/orders');
+const authRoutes = require('./routes/auth');
 
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
 const app = express();
@@ -47,6 +48,7 @@ app.use('/add', addRoutes);
 app.use('/courses', coursesRoutes);
 app.use('/cart', cartRoutes);
 app.use('/orders', ordersRoutes);
+app.use('/auth', authRoutes);
 
 
 const PORT = process.env.PORT || 3000;

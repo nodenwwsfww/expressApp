@@ -25,7 +25,13 @@
             {{#if isOrders}}
                 <li class="active"><a href="/orders">Заказы</a></li>
             {{else}}
-                <li><a href="/orders">Корзина</a></li>
+                <li><a href="/orders">Заказы</a></li>
+            {{/if}}
+
+            {{#if isLogin}}
+                <li class="active"><a href="/auth/login#login">Войти</a></li>
+            {{else}}
+                <li><a href="/auth/login#login">Войти</a></li>
             {{/if}}
         </ul>
     </div>
