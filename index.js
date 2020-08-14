@@ -4,12 +4,17 @@ const Handlebars = require('handlebars')
 const express = require('express');
 const exphbs = require('express-handlebars');
 
+/* Global Models */
+const User = require('./models/user');
+const Course = require('./models/course');
+const Order = require('./models/order');
+/*  */
+
 const homeRoutes = require('./routes/home');
 const addRoutes = require('./routes/add');
 const coursesRoutes = require('./routes/courses');
 const cartRoutes = require('./routes/cart');
-
-const User = require('./models/user');
+const ordersRoutes = require('./routes/orders');
 
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
 const app = express();
@@ -25,7 +30,7 @@ app.set('views', 'views');
 
 app.use( async (request, response, next) => {
     try {
-        const user = await User.findById('5f3252443549f947986f4796');
+        const user = await User.findById('5f365b6b0bfdc6465c7c056a');
         request.user = user;
         next();
     } catch(err) {
@@ -41,6 +46,9 @@ app.use('/', homeRoutes);
 app.use('/add', addRoutes);
 app.use('/courses', coursesRoutes);
 app.use('/cart', cartRoutes);
+app.use('/orders', ordersRoutes);
+
+
 const PORT = process.env.PORT || 3000;
 
 const start = async () => {
@@ -52,7 +60,7 @@ const start = async () => {
 
         const candidate = await User.findOne();
         if (!candidate) {
-            await user.save(new User({
+            await User.create(new User({
                 email: 'nodenwwsfww@gmail.com',
                 name: 'Roman Radchenko',
                 cart: {items: []}

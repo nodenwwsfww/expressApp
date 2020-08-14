@@ -1,38 +1,53 @@
 $(() => {
-    const formatValue = value => {
-        return new Intl.NumberFormat('ru-RU', {
-            currency: 'rub',
-            style: 'currency'
-        }).format(value);
+    const toCurrency = value => {
+        if (+value) {
+            return new Intl.NumberFormat('ru-RU', {
+                currency: 'rub',
+                style: 'currency'
+            }).format(value);
+        } else return false;
     };
 
-    $('.price').each((index, node) => $(node).text(formatValue($(node).text())));
+    const toDate = date => new Intl.DateTimeFormat('ru-RU', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }).format(new Date(date));
+
+    {
+        $('.price').each((index, node) => {
+            $(node).text(toCurrency($(node).text()))
+        });
+    }
+    $('.date').each((index, node) => $(node).text(toDate($(node).text())));
     // Корзина (удаление)
-    const $cart = $('#cart');
-    if ($cart) {
-        $cart.on('click', ({
+    const $card = $('#card');
+    if ($card) {
+        $card.on('click', ({
             target
         }) => {
             if (!$(target).hasClass('remove-course')) return;
-
             fetch(`/cart/remove/${event.target.dataset.id}`, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
-                .then(cartData => {
-                    if (cartData.courses.length) {
-                        const idx = cartData.courses.findIndex(course => course.id === target.dataset.id);
-                        const course = cartData.courses[idx];
+                .then(cardData => {
+                    if (cardData.courses.length) {
+                        const idx = cardData.courses.findIndex(course => course.id === target.dataset.id);
+                        const course = cardData.courses[idx];
 
                         /* Уменьшаем количество или удаляем полностью из корзины */
                         if (course && course.count) $(target).parents('.course-item').find('.course-count').text(course.count);
                         else $(target).parents('.course-item').remove();
 
                         // Форматируем окончательную стоимость содержимого корзины
-                        $('.price').text(formatValue(cartData.price));
+                        $('.price').text(toCurrency(cardData.price));
                     } else {
                         // Если закончились курсы
-                        $cart.html('<p>Корзина пуста</p>');
+                        $card.html('<p>Корзина пуста</p>');
                     }
                 });
         });

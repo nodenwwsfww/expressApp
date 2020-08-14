@@ -1,5 +1,5 @@
 <h1>Корзина</h1>
-<div id="cart">
+<div id="card">
     {{#if courses.length}}
     <table>
         <thead>
@@ -22,6 +22,9 @@
         </tbody>
     </table>
     <p><strong>Цена:</strong> <span class="price">{{price}}</span></p>
+    <form action="/orders" method="POST">
+        <button type="submit" class="btn">Сделать заказ</button>
+    </form>
     {{else}}
     <p>Корзина пуста</p>
     {{/if}}
