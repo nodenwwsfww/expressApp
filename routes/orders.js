@@ -6,7 +6,7 @@ router.get('/', async (request, response) => {
         let orders = await Order.find({'user': request.user.id})
             .populate('user');
 
-        // console.log(orders[0].courses);
+        // ;
         orders = orders.map(order => ({...order._doc, id: order._id, 
             price: order.courses.reduce( (total, c) => total += +c.course.price * +c.count, 0) 
         }));
@@ -31,7 +31,6 @@ router.post('/', async (request, response) => {
             course: {...item.courseId._doc}
         }));
 
-        console.log(user.cart.items);
         const order = new Order({
             user: request.user.id,
             courses
