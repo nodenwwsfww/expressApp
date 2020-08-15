@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Handlebars = require('handlebars')
 const express = require('express');
 const exphbs = require('express-handlebars');
+const session = require('express-session');
 
 /* Global Models */
 const User = require('./models/user');
@@ -10,6 +11,7 @@ const Course = require('./models/course');
 const Order = require('./models/order');
 /*  */
 
+const varMiddleWare = require('./middleware/variables');
 const homeRoutes = require('./routes/home');
 const addRoutes = require('./routes/add');
 const coursesRoutes = require('./routes/courses');
@@ -29,19 +31,14 @@ app.engine('hbs', hbs.engine, {});
 app.set('view engine', 'hbs');
 app.set('views', 'views');
 
-app.use( async (request, response, next) => {
-    try {
-        const user = await User.findById('5f365b6b0bfdc6465c7c056a');
-        request.user = user;
-        next();
-    } catch(err) {
-        console.error(err);
-    }
-});
-
 app.use(express.static( path.join(__dirname, 'public') ));
 app.use(express.urlencoded({extended: true}));
-
+app.use(session({
+    secret: 'some secret value',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(varMiddleWare);
 
 app.use('/', homeRoutes);
 app.use('/add', addRoutes);
@@ -59,15 +56,6 @@ const start = async () => {
         const url = `mongodb+srv://nwwsfww:${password}@cluster0.xe1qk.mongodb.net/shop`;
     
         await mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
-
-        const candidate = await User.findOne();
-        if (!candidate) {
-            await User.create(new User({
-                email: 'nodenwwsfww@gmail.com',
-                name: 'Roman Radchenko',
-                cart: {items: []}
-            }));
-        }
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);

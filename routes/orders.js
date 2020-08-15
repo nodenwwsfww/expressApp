@@ -3,7 +3,7 @@ const router = new Router();
 
 router.get('/', async (request, response) => {
     try {
-        let orders = await Order.find({'user': request.user.id})
+        let orders = await Order.find({'user': request.session.user.id})
             .populate('user');
 
         // ;
