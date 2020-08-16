@@ -1,14 +1,14 @@
 const {Router} = require('express');
 const router = Router();
 
-router.get('/', (request, response) =>  {
+router.get('/', checkAuth, (request, response) =>  {
     response.render('add', {
         title: 'Добавить курс',
         isAdd: true
     });
 });
 
-router.post('/', async (request, response) => {
+router.post('/', checkAuth, async (request, response) => {
     const course = new Course({
         title: request.body.title,
         price: request.body.price,

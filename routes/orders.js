@@ -1,9 +1,9 @@
 const {Router} = require('express');
 const router = new Router();
 
-router.get('/', async (request, response) => {
+router.get('/', checkAuth, async (request, response) => {
     try {
-        let orders = await Order.find({'user': request.session.user.id})
+        let orders = await Order.find({'user': request.user.id})
             .populate('user');
 
         // ;
@@ -20,7 +20,7 @@ router.get('/', async (request, response) => {
     }
 });
 
-router.post('/', async (request, response) => {
+router.post('/', checkAuth, async (request, response) => {
     try {
         const user = await request.user
         .populate('cart.items.courseId')

@@ -31,7 +31,7 @@ router.get('/:id/', async (request, response) => {
     }
 });
 
-router.get('/:id/edit', async (request, response) => {
+router.get('/:id/edit', checkAuth, async (request, response) => {
     if (!request.query.allow) {
         return response.redirect('/');
     }
@@ -47,7 +47,7 @@ router.get('/:id/edit', async (request, response) => {
     }
 });
 
-router.post('/edit', async (request, response) => {
+router.post('/edit', checkAuth, async (request, response) => {
     const {id} = request.body;
     delete request.body.id;
     try {
@@ -58,7 +58,7 @@ router.post('/edit', async (request, response) => {
     }
 });
 
-router.post('/remove', async (request, response) => {
+router.post('/remove', checkAuth, async (request, response) => {
     try {
         await Course.findByIdAndRemove(request.body.id);
         response.redirect('/courses');
