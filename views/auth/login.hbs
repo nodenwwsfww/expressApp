@@ -20,13 +20,21 @@
                     <label for="log-password">Пароль</label>
                     <span class="helper-text" data-error="Введите пароль" required=""></span>
                 </div>
-
+                
+                <input type="hidden" name="_csrf" value="{{csrf}}">
+                
                 <button class="btn btn-primary" type="submit">Войти</button>
             </form>
         </div>
         <div id="register" class="col s6 offset-s3">
             <h1>Регистрация</h1>
             <form action="/auth/register" method="POST">
+                <div class="input-field">
+                    <input id="name" name="name" type="text" class="validate" autocomplete>
+                    <label for="name">Имя</label>
+                    <span class="helper-text" data-error="Введите имя" required=""></span>
+                </div>
+
                 <div class="input-field">
                     <input id="reg-email" name="email" type="email" class="validate" required autocomplete>
                     <label for="reg-email">Email</label>
@@ -40,11 +48,12 @@
                 </div>
 
                 <div class="input-field">
-                    <input id="confirm" name="password" type="password" class="validate" autocomplete>
+                    <input id="confirm" name="confirm" type="password" class="validate" autocomplete>
                     <label for="confirm">Повтор пароля</label>
                     <span class="helper-text" data-error="Повторите пароль" required=""></span>
                 </div>
 
+                <input type="hidden" name="_csrf" value="{{csrf}}">
                 <button class="btn btn-primary" type="submit">Зарегистрироваться</button>
             </form>
         </div>

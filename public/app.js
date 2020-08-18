@@ -31,6 +31,9 @@ $(() => {
         }) => {
             if (!$(target).hasClass('remove-course')) return;
             fetch(`/cart/remove/${event.target.dataset.id}`, {
+                    headers: {
+                        'X-XSRF-TOKEN': event.target.dataset.csrf
+                    },
                     method: 'DELETE'
                 })
                 .then(response => response.json())

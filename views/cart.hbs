@@ -15,7 +15,7 @@
                 <td>{{title}}</td>
                 <td class="course-count">{{count}}</td>
                 <td>
-                    <button class="btn btn-small remove-course" data-id="{{id}}">Удалить</button>
+                    <button class="btn btn-small remove-course" data-csrf="{{@root.csrf}}" data-id="{{id}}">Удалить</button>
                 </td>
             </tr>
             {{/each}}
@@ -23,6 +23,8 @@
     </table>
     <p><strong>Цена:</strong> <span class="price">{{price}}</span></p>
     <form action="/orders" method="POST">
+        
+        <input type="hidden" name="_csrf" value="{{csrf}}">
         <button type="submit" class="btn">Сделать заказ</button>
     </form>
     {{else}}

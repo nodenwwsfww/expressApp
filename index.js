@@ -5,6 +5,7 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const MongoStore = require('connect-mongodb-session')(session);
+const csurf = require('csurf');
 
 /* Global Models */
 const User = require('./models/user');
@@ -54,6 +55,8 @@ app.use(session({
     saveUninitialized: false,
     store
 }));
+app.use(csurf());
+
 app.use(varMiddleWare);
 app.use(userMiddleWare);
 
