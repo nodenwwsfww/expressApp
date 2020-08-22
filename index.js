@@ -5,7 +5,8 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const MongoStore = require('connect-mongodb-session')(session);
-const csurf = require('csurf');
+const csurf = require('csurf'); // защита от CSRF ,XRF
+const flash = require('connect-flash'); // ошибки для пользователей
 
 /* Global Models */
 const User = require('./models/user');
@@ -16,6 +17,7 @@ const Order = require('./models/order');
 const varMiddleWare = require('./middleware/variables');
 const userMiddleWare = require('./middleware/user');
 const checkAuth = require('./middleware/auth');
+const keys = require('./keys');
 
 
 const homeRoutes = require('./routes/home');
@@ -34,12 +36,9 @@ const hbs = exphbs.create({
     handlebars: allowInsecurePrototypeAccess(Handlebars)
 });
 
-const password = '4wLwiA26Gs9Eoqnl'; // edit
-const MONGODB_URI = `mongodb+srv://nwwsfww:${password}@cluster0.xe1qk.mongodb.net/shop`;
-
 const store = new MongoStore({
     collection: 'sessions',
-    uri: MONGODB_URI
+    uri: keys.MONGODB_URI
 });
 
 
@@ -50,12 +49,13 @@ app.set('views', 'views');
 app.use(express.static( path.join(__dirname, 'public') ));
 app.use(express.urlencoded({extended: true}));
 app.use(session({
-    secret: 'some secret value',
+    secret: keys.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store
 }));
 app.use(csurf());
+app.use(flash());
 
 app.use(varMiddleWare);
 app.use(userMiddleWare);
@@ -72,7 +72,7 @@ const PORT = process.env.PORT || 3000;
 
 const start = async () => {
     try {
-        await mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+        await mongoose.connect(keys.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
