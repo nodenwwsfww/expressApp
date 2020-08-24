@@ -1,5 +1,5 @@
 const {
-    Router
+    Router, request
 } = require('express');
 const {
     Schema,
@@ -21,6 +21,10 @@ const transporter = nodemailer.createTransport(sendgrid({
 const regEmail = require('../emails/registration');
 const resetEmail = require('../emails/reset');
 
+// Validators
+const { validationResult } = require('express-validator');
+const {loginValidators, registerValidators} = require('../utils/validators');
+
 router.get('/login', async (request, response) => {
     response.render('auth/login', {
         title: 'Авторизация',
@@ -36,13 +40,19 @@ router.get('/logout', (request, response) => {
     });
 });
 
-router.post('/login', async (request, response) => {
+router.post('/login', loginValidators, async (request, response) => {
     try {
+        const errors = validationResult(request);
+
+        if (!errors.isEmpty()) {
+            request.flash('loginError', errors.array()[0].msg);
+            return response.redirect('/auth/login#login');
+        }
+
         const {
             email,
             password
         } = request.body;
-
         const user = await User.findOne({
             email
         });
@@ -65,7 +75,7 @@ router.post('/login', async (request, response) => {
     }
 });
 
-router.post('/register', async (request, response) => {
+router.post('/register', registerValidators, async (request, response) => {32222222
     try {
         const {
             name,
@@ -73,6 +83,13 @@ router.post('/register', async (request, response) => {
             password,
             confirm
         } = request.body;
+
+        const errors = validationResult(request);
+
+        if (!errors.isEmpty()) {
+            request.flash('registerError', errors.array()[0].msg);
+            return response.status(422).redirect('/auth/login#register');
+        }
 
         const candidate = await User.findOne({
             email

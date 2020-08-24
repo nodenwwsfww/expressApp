@@ -1,7 +1,11 @@
 const {
-    Router
+    Router, request
 } = require('express');
 const router = Router();
+
+function isOwner(course, request) {
+    return request.user._id.toString() === course.userId.toString();
+}
 
 router.get('/', async (request, response) => {
     try {
@@ -11,6 +15,7 @@ router.get('/', async (request, response) => {
         response.render('courses', {
             title: 'Курсы',
             isCourses: true,
+            userId: request.user ? request.user._id.toString() : null,
             courses
         });
     } catch(err) {
@@ -38,6 +43,11 @@ router.get('/:id/edit', checkAuth, async (request, response) => {
     try {
         const course = await Course.findById(request.params.id);
 
+        if (!isOwner(course, request)) {
+            request.query.allow = !request.query.allow;
+            return response.redirect('/');
+        }
+
         response.render('course-edit', {
             title: `Редактировать ${course.title}`,
             course
@@ -48,10 +58,18 @@ router.get('/:id/edit', checkAuth, async (request, response) => {
 });
 
 router.post('/edit', checkAuth, async (request, response) => {
-    const {id} = request.body;
-    delete request.body.id;
     try {
-        await Course.findByIdAndUpdate(id, request.body);
+        const {id} = request.body;
+        const course = await Course.findById(id);
+
+        if (!course) return response.redirect('/');
+        if (!isOwner(course, request)) {
+            return response.redirect('/');
+        }
+        delete request.body.id;
+
+        Object.assign(course, request.body);
+        await course.save();
         response.redirect('/courses');
     } catch(err) {
         console.error(err);
@@ -60,7 +78,10 @@ router.post('/edit', checkAuth, async (request, response) => {
 
 router.post('/remove', checkAuth, async (request, response) => {
     try {
-        await Course.findByIdAndRemove(request.body.id);
+        await Course.deleteOne({
+            _id: request.body.id,
+            userId: request.user._id
+        });
         response.redirect('/courses');
     } catch(err) {
         console.error(err);
