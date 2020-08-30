@@ -75,7 +75,7 @@ router.post('/login', loginValidators, async (request, response) => {
     }
 });
 
-router.post('/register', registerValidators, async (request, response) => {32222222
+router.post('/register', registerValidators, async (request, response) => {
     try {
         const {
             name,
